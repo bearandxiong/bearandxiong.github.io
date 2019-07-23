@@ -1,0 +1,616 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>unapp Template</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<meta name="author" content="" />
+
+  <style> rect {fill: lightblue; stroke: black; }</style>
+	<style> circle {fill: lightblue; stroke: black;} </style>
+
+	<style>
+	.bubbles {
+	  stroke-width: 1px;
+	  stroke: black;
+	  opacity: .8
+	}
+	.bubbles:hover {
+	  stroke: black;
+	}
+	</style>
+
+
+	<style>
+	.tooltip{
+      position      : absolute;
+      text-align    : center;
+      max-width     : 70px;
+      max-height    : 30px;
+      padding       : 8px;
+      border        : none;
+      border-radius : 8px;
+      margin-top    : -30px;
+      font          : 10px sans-serif;
+      background    : black;
+      color         : white;
+      pointer-events: none;
+  }
+
+	</style>
+
+	<!-- Animate.css -->
+	<link rel="stylesheet" href="css/animate.css">
+	<!-- Icomoon Icon Fonts-->
+	<link rel="stylesheet" href="css/icomoon.css">
+	<!-- Bootstrap  -->
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<!-- Magnific Popup -->
+	<link rel="stylesheet" href="css/magnific-popup.css">
+	<!-- Owl Carousel -->
+	<link rel="stylesheet" href="css/owl.carousel.min.css">
+	<link rel="stylesheet" href="css/owl.theme.default.min.css">
+	<!-- Theme style  -->
+	<link rel="stylesheet" href="css/style.css">
+	<!-- Modernizr JS -->
+	<script src="js/modernizr-2.6.2.min.js"></script>
+	<!-- FOR IE9 below -->
+	<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+
+	<style>
+		h1{
+ 		color: white; /* or hexidecimal */
+		font-weight: bold;
+		font-size: 50px;
+		font-family: sans-serif;
+		}
+	</style>
+
+	</head>
+
+	<body>
+	<div class="colorlib-loader"></div>
+  <script src="https://d3js.org/d3.v4.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"></script>
+	<div id="page">
+
+		<nav class="colorlib-nav" role="navigation">
+			<div class="top-menu">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-2">
+							<div id="colorlib-logo"><a href="index.html">Jie Xiong</a></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<section id="home" class="video-hero" style="height: 500px; background-image: url(car1.png);  background-size:cover; background-position: center center;background-attachment:fixed;" data-section="home">
+		<div class="top menu"></div>
+			<div class="display-t display-t2 text-center">
+				<div class="display-tc display-tc2">
+								<h1>Fuel economy in automobiles</h1>
+				</div>
+			</div>
+		</section>
+
+
+		<div class="colorlib-work">
+			<div class="container">
+				<div class="row">
+
+					<div class="col-md-12">
+						<div class="work-flex">
+
+							<div class="half animate-box">
+								<div class="row no-gutters">
+									<div class="col-md-12 col-md-push-12 no-gutters">
+										<!-- <a href="#" class="work-img" style="background-image: url(images/work-1.jpg);"></a> -->
+										<div id="my_dataviz"></div>
+									</div>
+								</div>
+							</div>
+
+							<div class="half animate-box">
+								<div class="row no-gutters">
+									<div class="col-md-12 col-md-pull-12 no-gutters">
+										<div class="display-t desc">
+											<div class="display-tc">
+												<h2><a href="#"> Fuel economy in automobiles</a></h2>
+												<p> The fuel economy of an automobile relates distance traveled by a vehicle and the amount
+													of fuel consumed.
+													Consumption can be expressed in terms of volume of fuel to travel a distance,
+													or the distance travelled per unit volume of fuel consumed (Mile per Gallon or MPG). </p> <p>
+													Since fuel consumption of vehicles is a significant factor in air pollution,
+													and since importation of motor fuel can be a large part of a nation's foreign trade,
+													many countries impose requirements for fuel economy. </p>
+												<p> The right chart shows a lower
+													<span style="color: #69b3a2"> MPG</span>
+													is usually
+													correlated with higher
+													<span style="color: #ff0000"># of engines</span>
+													.
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<div class="gototop js-top">
+		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
+	</div>
+
+
+	<script>
+
+	// set the dimensions and margins of the graph
+	var margin = {top: 100, right: 100, bottom: 100, left: 140},
+	    width = 500 - margin.left - margin.right,
+	    height = 500 - margin.top - margin.bottom,
+	    innerRadius = 80,
+	    outerRadius = 300;   // the outerRadius goes from the middle of the SVG area to the border
+
+	// append the svg object
+	var svg = d3.select("#my_dataviz")
+	  .append("svg")
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
+	  .append("g")
+	    .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
+
+	d3.csv("https://flunky.github.io/cars2017.csv", function(data) {
+
+		function sortByDateAscending(a, b) {
+    	return a.AverageHighwayMPG  - b.AverageHighwayMPG  ;
+		}
+
+    data = data.sort(sortByDateAscending);
+
+    // data filtering to narrow down comparison
+		data = data.filter(function(d){ return d.EngineCylinders >0 })
+		data = data.filter(function(d){ return d.Fule = 'Gasoline' })
+		data = data.filter(function(d){ return d.EngineCylinders < 10})
+
+		data.forEach(function(d){
+
+			d.make_orig = d.Make
+			d.Fuel = d.Fuel
+			d.EngineCylinders =  + d.EngineCylinders
+			d.AverageHighwayMPG = + d.AverageHighwayMPG
+			d.AverageCityMPG    = + d.AverageCityMPG
+			d.Make       = d.make_orig +'_'+ d.EngineCylinders
+
+		})
+
+		//  delete some duplicate make_engine#
+		var names = [];
+		var result = [];
+		var indx=-1;
+		for(var i=0; i< data.length; i++){
+		    indx = names.indexOf(data[i].Make);
+		    if(indx==-1){
+		        names.push(data[i].Make);
+		        result.push(data[i]);
+
+		    }
+		}
+		data= result;
+
+
+	  // Scales
+	  var x = d3.scaleBand()
+	      .range([0, 2 * Math.PI])    // X axis goes from 0 to 2pi = all around the circle. If I stop at 1Pi, it will be around a half circle
+	      .align(0)                  // This does nothing
+	      .domain(data.map(function(d) { return d.Make ; })); // The domain of the X axis is the list of states.
+	  var y = d3.scaleRadial()
+	      .range([innerRadius, outerRadius])   // Domain will be define later.
+	      .domain([0, 130]); // Domain of Y is from 0 to the max seen in the data
+
+		// Second barplot Scales
+		var ybis = d3.scaleRadial()
+		      .range([innerRadius, 0])   // Domain will be defined later.
+		      .domain([2, 9]);
+
+
+	  // Add the bars
+	  svg.append("g")
+	    .selectAll("path")
+	    .data(data)
+	    .enter()
+	    .append("path")
+	      .attr("fill", "#69b3a2")
+	      .attr("d", d3.arc()     // imagine your doing a part of a donut plot
+	          .innerRadius(innerRadius)
+	          .outerRadius(function(d) { return y(d['AverageHighwayMPG']); })
+	          .startAngle(function(d) { return x(d.Make); })
+	          .endAngle(function(d) { return x(d.Make) + x.bandwidth(); })
+	          .padAngle(0.01)
+	          .padRadius(innerRadius));
+
+	// Add the labels
+	 svg.append("g")
+			.selectAll("g")
+			.data(data)
+			.enter()
+			.append("g")
+			   .attr("text-anchor", function(d) { return (x(d.Make) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "end" : "start"; })
+			   .attr("transform", function(d) { return "rotate(" + ((x(d.Make) + x.bandwidth() / 2) * 180 / Math.PI - 90) + ")"+"translate(" + (y(d['AverageHighwayMPG'])+10) + ",0)"; })
+			.append("text")
+			   .text(function(d){return(d.Make)})
+			   .attr("transform", function(d) { return (x(d.Make) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "rotate(180)" : "rotate(0)"; })
+			   .style("font-size", "11px")
+			   .attr("alignment-baseline", "middle")
+
+	// Add the second series
+	  svg.append("g")
+	    .selectAll("path")
+	    .data(data)
+	    .enter()
+	    .append("path")
+	      .attr("fill", "red")
+	      .attr("d", d3.arc()     // imagine your doing a part of a donut plot
+	          .innerRadius( function(d) { return ybis(0) })
+	          .outerRadius( function(d) { return ybis(d['EngineCylinders'] ); })
+	          .startAngle(function(d) { return x(d.Make); })
+	          .endAngle(function(d) { return x(d.Make) + x.bandwidth(); })
+	          .padAngle(0.01)
+	          .padRadius(innerRadius))
+
+
+	});
+
+
+	</script>
+
+
+
+	<!-- jQuery -->
+	<script src="js/jquery.min.js"></script>
+	<!-- jQuery Easing -->
+	<script src="js/jquery.easing.1.3.js"></script>
+	<!-- Bootstrap -->
+	<script src="js/bootstrap.min.js"></script>
+	<!-- Waypoints -->
+	<script src="js/jquery.waypoints.min.js"></script>
+	<!-- Stellar Parallax -->
+	<script src="js/jquery.stellar.min.js"></script>
+	<!-- YTPlayer -->
+	<script src="js/jquery.mb.YTPlayer.min.js"></script>
+	<!-- Owl carousel -->
+	<script src="js/owl.carousel.min.js"></script>
+	<!-- Magnific Popup -->
+	<script src="js/jquery.magnific-popup.min.js"></script>
+	<script src="js/magnific-popup-options.js"></script>
+	<!-- Counters -->
+	<script src="js/jquery.countTo.js"></script>
+	<!-- Main -->
+	<script src="js/main.js"></script>
+
+</body>
+
+
+
+<body >
+
+	  <style>
+
+	  .circle-label {
+	    font: 12px sans-serif;
+	    opacity: 0;
+	  }
+	  .buttons {
+	    margin-bottom: 10px;
+			margin-left: 120px;
+			margin-right: 100px;
+	  }
+
+	  .y path {
+	    fill: #efefef;
+	  }
+	  .axis line {
+	    stroke: #bfbfbf;
+	    stroke-dasharray: 1;
+		  stroke-opacity: .5;
+	  }
+	  </style>
+
+
+		<div class="colorlib-work">
+			<div class="container">
+					<div class="row">
+
+						<div class="col-md-12">
+							<div class="work-flex">
+
+								<div class="half animate-box">
+									<div class="row no-gutters">
+										<div class="col-md-12 col-md-push-12 no-gutters">
+											<img src="brands.png" height="450" width="600">
+										</div>
+									</div>
+								</div>
+
+								<div class="half animate-box">
+									<div class="row no-gutters">
+										<div class="col-md-12 col-md-pull-12 no-gutters">
+											<div class="display-t desc">
+												<div class="display-tc">
+													<h2><a href="#"> Fuel economy by brands</a></h2>
+													<p>
+														The fuel economy varies by vehicle make. Select from the drop down menu to
+														compare fuel economy across a variety of makes on the right.
+													</p>
+													<p>
+														<span style="color: steelblue">
+														Click a brand below to compare gas consumption.
+													</span>
+													Mouse over to see dedails on the figure.
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="buttons"></div>
+			<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+			<script>
+
+			var margin = {top: 20, right: 10, bottom: 40, left: 400};
+
+			var width = 900 - margin.left - margin.right,
+			    height = 400 - margin.top - margin.bottom;
+
+			var svg = d3.select("body").append("svg")
+			    .attr("width", width + margin.left + margin.right)
+			    .attr("height", height + margin.top + margin.bottom)
+			    .append("g")
+			    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+			var xScale = d3.scaleLinear()
+				.domain([1, 8])
+				.range([0, width]);
+
+			var yScale = d3.scaleLinear()
+				.domain([20, 45])
+				.range([height, 0]);
+
+			var xAxis = d3.axisBottom(xScale).ticks(7)
+				.tickSize(-height);
+
+			var yAxis = d3.axisLeft(yScale)
+				.tickSize(-width);
+
+			svg.append("g")
+				.attr("class", "y axis")
+				.call(yAxis)
+
+				// text label for the y axis
+		  svg.append("text")
+		      .attr("transform", "translate(0," + (height/2 ) + ")")
+		      //.style("text-anchor", "middle")
+		      .text("MPG Highway");
+
+			svg.append("g")
+				.attr("class", "x axis")
+				.attr("transform","translate(0," + height + ")")
+				.call(xAxis)
+
+				// text label for the x axis
+			svg.append("text")
+				      .attr("transform",
+				            "translate(" + (width/2) + " ," +
+				                           (height + margin.top - 30) + ")")
+				      .style("text-anchor", "middle")
+				      .text("# of engines");
+
+			  d3.select(".y")
+				  .select("text")
+				  .remove()
+
+			//var colorScale = d3.scaleSequential(d3.interpolateRainbow);
+
+
+			function dataSwap(datasetGroup) {
+
+				eachDataGroup = data.filter(function(d) { return d.group == datasetGroup })
+
+				eachDataGroup.sort(function(a, b) { return a.x - b.x });
+
+				svg.selectAll(".circleGroups")
+					.data(eachDataGroup)
+					.transition()
+					.delay(function(d, i) { return i*40; })
+					.attr("transform",function(d) { return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")" })
+
+				svg.selectAll(".circleGroups")
+					.select("circle")
+					.transition()
+					.delay(function(d, i) { return i*40; })
+					.style("fill", function(d, i) { return colorScale(i); })
+
+				d3.selectAll(".title")
+				  .text("Make: " + datasetGroup)
+			}
+
+			d3.csv("https://flunky.github.io/cars2017.csv", function(error, data) {
+
+				if (error) return console.warn(error);
+
+
+			  data = data.filter(function(d){ return d.EngineCylinders > 0 })
+				//data = data.filter(function(d){ return d.Fule = 'Gasoline' })
+				data = data.filter(function(d){ return d.EngineCylinders < 10})
+
+				data.forEach(function(d){
+
+						d.make_orig = d.Make
+						d.Fuel = d.Fuel
+						d.EngineCylinders =  + d.EngineCylinders
+						d.AverageHighwayMPG = + d.AverageHighwayMPG
+						d.AverageCityMPG    = + d.AverageCityMPG
+						d.Make       = d.make_orig +'_'+ d.EngineCylinders
+			            // figure variables
+			            d.x = + d.EngineCylinders
+			            d.y = + d.AverageHighwayMPG
+			            d.group = d.make_orig
+
+					})
+
+
+				window.data = data;
+				var groups = d3.set(data.map(function(d) { return d.group })).values();
+
+			  var colorScale = d3.scaleOrdinal()
+			      .domain(groups)
+			      .range(d3.schemeSet2);
+
+				d3.select(".buttons")
+				  .selectAll("button")
+					.data(groups)
+				  .enter().append("button")
+					.text(function(d) { return "" + d; })
+					.on("click", function(d) {
+						d3.selectAll("button").style('background-color', '');
+						d3.select(this).style('background-color', 'lightblue');
+						dataSwap(d);
+					})
+
+				groupOneData = data.filter(function(d) { return d.group == groups[0] })
+
+				groupOneData.sort(function(a, b) { return a.x - b.x });
+
+				colorScale.domain([1, groupOneData.x])
+
+				svg.append("text")
+				   .attr("class", "title")
+				   .attr("dy", -5)
+				   //.text("Make: " + groupOneData[0].group)
+
+				var circleGroups = svg.selectAll(".circleGroups")
+					.data(groupOneData)
+				  .enter().append("g")
+				  .attr("class", "circleGroups")
+					.attr("transform",function(d) { return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")" })
+					.on("mouseenter", function(d) {
+
+						d3.select(this)
+							.append("text")
+							.attr("dx", 5)
+							.attr("dy", 10)
+							.text("(Engine: " + d.x + ", MPG: " + d.y + ")")
+
+						d3.selectAll("circle")
+						  .style("fill-opacity", .5);
+
+						d3.select(this)
+						  .select("circle")
+						  .transition()
+						  .ease(d3.easeElastic)
+						  .attr("r", 20)
+						  .style("fill-opacity", 1);
+					})
+					.on("mouseleave", function(d) {
+
+						d3.select(this)
+						  .select("text")
+						  .transition()
+						  .style("opacity", 0)
+						  .transition()
+						  .remove();
+
+						d3.select(this)
+						  .select("circle")
+						  .transition()
+						  .ease(d3.easeElastic)
+						  .attr("r", 10)
+
+						d3.selectAll("circle")
+						  .style("fill-opacity", 1);
+					})
+
+				var radiusSize = 10;
+
+				circleGroups.append("circle")
+					.attr("r", radiusSize)
+					.style("fill", function(d, i) { return "#69b3a2"; })
+
+			})
+
+		</script>
+
+
+		<div class="colorlib-work">
+			<div class="container">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="work-flex">
+
+
+								<div class="half animate-box">
+									<div class="row no-gutters">
+										<div class="col-md-12 col-md-push-12 no-gutters">
+											<img src="electric car.png" height="450" width="600">
+										</div>
+									</div>
+								</div>
+
+
+								<div class="half animate-box">
+									<div class="row no-gutters">
+										<div class="col-md-12 col-md-pull-12 no-gutters">
+											<div class="display-t desc">
+												<div class="display-tc">
+													<h2><a> Electric car</a></h2>
+													<p>
+														From 2008, a renaissance in electric vehicle manufacturing occurred due to advances in batteries,
+														illnesses,
+														and deaths due to air pollution, and the desire to reduce greenhouse gas emissions.
+													</p>
+													<p>
+														The equivalent MPG for electric car is much higher than convention cars with gas engines.
+														Click <a href="electric_car.html"> here </a> for a short survey.
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+</body>
+
+</html>
