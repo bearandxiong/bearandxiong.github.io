@@ -3,7 +3,7 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>unapp Template</title>
+	<title>CS498 JX</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="" />
 	<meta name="keywords" content="" />
@@ -71,6 +71,25 @@
 		font-family: sans-serif;
 		}
 	</style>
+
+
+	<script>
+		function getVote(int) {
+			if (window.XMLHttpRequest) {
+				// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp=new XMLHttpRequest();
+			} else {  // code for IE6, IE5
+				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange=function() {
+				if (this.readyState==4 && this.status==200) {
+					document.getElementById("poll").innerHTML=this.responseText;
+				}
+			}
+			xmlhttp.open("GET","poll_vote.php?vote="+int,true);
+			xmlhttp.send();
+		}
+	</script>
 
 	</head>
 
@@ -363,7 +382,7 @@
 														<span style="color: steelblue">
 														Click a brand below to compare gas consumption.
 													</span>
-													Mouse over to see dedails on the figure.
+													Mouseover to show dedails.
 													</p>
 												</div>
 											</div>
@@ -594,9 +613,19 @@
 														and deaths due to air pollution, and the desire to reduce greenhouse gas emissions.
 													</p>
 													<p>
-														The equivalent MPG for electric car is much higher than convention cars with gas engines.
-														Click <a href="electric_car.html"> here </a> for a short survey.
+														The equivalent MPG for electric car is much higher than conventional cars with gas/ diesel engines.
+														Click <a href="electric_car.html"> here </a> for a short survey of some common electric car brands.
 													</p>
+													<div id="poll">
+													<h3>Would you consider driving an electric car?</h3>
+													<form>
+													Yes:
+													<input type="radio" name="vote" value="0" onclick="getVote(this.value)">
+													<br>No:
+													<input type="radio" name="vote" value="1" onclick="getVote(this.value)">
+													</form>
+													</div>
+
 												</div>
 											</div>
 										</div>
@@ -609,6 +638,8 @@
 					</div>
 				</div>
 			</div>
+
+
 
 
 </body>
